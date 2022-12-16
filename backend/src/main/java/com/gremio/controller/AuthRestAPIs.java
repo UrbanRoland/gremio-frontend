@@ -7,7 +7,7 @@ import com.gremio.message.request.SignUpForm;
 import com.gremio.message.response.JwtResponse;
 import com.gremio.message.response.ResponseMessage;
 import com.gremio.model.Role;
-import com.gremio.model.RoleName;
+import com.gremio.model.ERole;
 import com.gremio.model.User;
 import com.gremio.repository.RoleRepository;
 import com.gremio.repository.UserRepository;
@@ -83,22 +83,21 @@ public class AuthRestAPIs {
 
 		strRoles.forEach(role -> {
 			switch (role) {
-			case "admin":
-				Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(adminRole);
-
-				break;
-			case "pm":
-				Role pmRole = roleRepository.findByName(RoleName.ROLE_PM)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(pmRole);
-
-				break;
-			default:
-				Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-						.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-				roles.add(userRole);
+				case "admin" -> {
+					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+					roles.add(adminRole);
+				}
+				case "pm" -> {
+					Role pmRole = roleRepository.findByName(ERole.ROLE_PM)
+							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+					roles.add(pmRole);
+				}
+				default -> {
+					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+					roles.add(userRole);
+				}
 			}
 		});
 

@@ -1,6 +1,6 @@
 package com.gremio.model;
 
-public enum RoleName {
+public enum ERole {
     ROLE_USER,
     ROLE_PM,
     ROLE_ADMIN
