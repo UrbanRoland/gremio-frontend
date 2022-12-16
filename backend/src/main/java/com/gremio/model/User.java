@@ -2,6 +2,7 @@ package com.gremio.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 
@@ -23,13 +24,17 @@ public class User{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String username;
 
     @NaturalId
+    @NotNull
     private String email;
 
+    @NotNull
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
