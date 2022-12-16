@@ -13,17 +13,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
 public class UserPrinciple implements UserDetails {
      
     @Serial
     private static final long serialVersionUID = 1L;
 
-	private final Long id;
+	@lombok.Getter
+    private final Long id;
 
+    @lombok.Getter
     private final String name;
 
     private final String username;
 
+    @lombok.Getter
     private final String email;
 
     @JsonIgnore
@@ -55,17 +59,6 @@ public class UserPrinciple implements UserDetails {
             authorities
     );
 }
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 
     @Override
     public String getUsername() {

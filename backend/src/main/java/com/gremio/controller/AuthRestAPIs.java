@@ -11,6 +11,8 @@ import com.gremio.model.ERole;
 import com.gremio.model.User;
 import com.gremio.repository.RoleRepository;
 import com.gremio.repository.UserRepository;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +20,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +52,7 @@ public class AuthRestAPIs {
 	JwtProvider jwtProvider;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) throws UnsupportedEncodingException {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest){
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -57,6 +60,12 @@ public class AuthRestAPIs {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		String jwt = jwtProvider.generateJwtToken(authentication);
+		User u = userRepository.findByUsername(loginRequest.getUsername()).orElse(null);
+
+		if (u != null) {
+			u.setToken(jwt);
+			userRepository.save(u);
+		}
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
 		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
@@ -100,7 +109,6 @@ public class AuthRestAPIs {
 				}
 			}
 		});
-
 		user.setRoles(roles);
 		userRepository.save(user);
 

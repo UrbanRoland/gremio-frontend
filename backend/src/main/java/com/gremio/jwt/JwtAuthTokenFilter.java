@@ -15,6 +15,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter{
@@ -26,8 +27,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter{
 	private UserDetailsServiceImpl userDetailsService;
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
-    
-    @Override
+
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
@@ -44,7 +45,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter{
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		} catch (Exception e) {
-			logger.error("Can NOT set user authentication -> Message: {}", e);
+			logger.error("Can NOT set user authentication", e);
 		}
 
 		filterChain.doFilter(request, response);

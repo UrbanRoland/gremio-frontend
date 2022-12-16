@@ -42,6 +42,9 @@ public class User{
     @Email
     private String email;
 
+    @Size(max = 500)
+    private String token;
+
     @NotBlank
     @Size(min=6, max = 100)
     private String password;
