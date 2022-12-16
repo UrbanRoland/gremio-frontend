@@ -13,8 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-
-
     /* In Spring 3.0
     authorizeRequests() -> authorizeHttpRequests()
     antMatcher() -> requestMatchers()
@@ -24,14 +22,9 @@ public class SecurityConfiguration {
 
        return http
 
-
                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->{
                     auth.requestMatchers("/").permitAll();
-                    auth.requestMatchers("/console/**").permitAll();
-                    auth.requestMatchers("/db/**").permitAll();
-
-
                     auth.requestMatchers("/user").permitAll();
                     auth.requestMatchers("/admin").permitAll();
                 })
