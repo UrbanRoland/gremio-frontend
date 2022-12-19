@@ -5,8 +5,9 @@ import InboxComponent from '@/components/InboxComponent.vue'
 import GoalsComponent from '@/components/GoalsComponent.vue'
 import PortfoliosComponent from '@/components/PortfoliosComponent.vue'
 import ReportingComponent from '@/components/ReportingComponent.vue'
-
-const routes = [
+import SignInComponent from '@/components/SignInComponent.vue'
+import SignUpComponent from '@/components/SignUpComponent.vue'
+ const routes = [
 
   {
     path: '/home',
@@ -37,6 +38,16 @@ const routes = [
     path: '/reporting',
     name: 'Reporting',
     component: ReportingComponent
+  },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: SignInComponent
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: SignUpComponent
   },
   {
     path: '/about',
