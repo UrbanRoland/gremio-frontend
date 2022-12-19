@@ -16,7 +16,41 @@
           </q-toolbar-title>
   
           <div class="q-pa-md q-gutter-sm">
-            <q-avatar color="dark" text-color="white">J</q-avatar>
+            <q-btn-dropdown
+              color="dark"
+              push
+              no-caps
+              @click="onMainClick"
+            >
+     
+      <template v-slot:label>
+        <div class="row items-center no-wrap">
+          <q-icon left name="person" />
+          <div class="text-center">
+            Loggen in User
+          </div>
+        </div>
+      </template>
+
+      <q-list>
+        <q-item clickable v-close-popup @click="onItemClick">
+          <q-item-section>
+            <q-item-label>My profile</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="onItemClick">
+          <q-item-section>
+            <q-item-label>My settings</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable v-close-popup @click="onItemClick">
+          <q-item-section>
+            <q-item-label>Logout</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+          
           </div>
         </q-toolbar>
       </q-header>
