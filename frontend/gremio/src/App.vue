@@ -1,11 +1,11 @@
 <template>
   <div>
     <Navigation />
+
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 import Navigation from './components/Navigation.vue'
 
 export default {
@@ -15,10 +15,6 @@ export default {
     Navigation
   },
 
-  setup () {
-    return {
-      leftDrawerOpen: ref(false)
-    }
-  }
+
 }
 </script>
