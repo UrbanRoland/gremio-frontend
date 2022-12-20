@@ -1,18 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeComponent from '../components/HomeComponent.vue'
-import MyTaskComponent from '@/components/MyTaskComponent.vue'
-import InboxComponent from '@/components/InboxComponent.vue'
-import GoalsComponent from '@/components/GoalsComponent.vue'
-import PortfoliosComponent from '@/components/PortfoliosComponent.vue'
-import ReportingComponent from '@/components/ReportingComponent.vue'
-import SignInComponent from '@/components/SignInComponent.vue'
-import SignUpComponent from '@/components/SignUpComponent.vue'
+import HomeComponent from '../views/HomeView.vue'
+import MyTaskComponent from '@/views/MyTaskView.vue'
+import InboxComponent from '@/views/InboxView.vue'
+import GoalsComponent from '@/views/GoalsView.vue'
+import PortfoliosComponent from '@/views/PortfoliosView.vue'
+import ReportingComponent from '@/views/ReportingView.vue'
+import SignInComponent from '@/views/SignIn.vue'
+import SignUpComponent from '@/views/SignUp.vue'
  const routes = [
 
   {
     path: '/home',
     name: 'Home',
-    component: HomeComponent
+    component: HomeComponent,
   },
   {
     path: '/inbox',
@@ -48,11 +48,6 @@ import SignUpComponent from '@/components/SignUpComponent.vue'
     path: '/signup',
     name: 'SignUp',
     component: SignUpComponent
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/AboutView.vue')
   }
 ]
 
