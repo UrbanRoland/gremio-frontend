@@ -62,6 +62,7 @@ public class AuthRestAPIs {
 		String jwt = jwtProvider.generateJwtToken(authentication);
 		User u = userRepository.findByUsername(loginRequest.getUsername()).orElse(null);
 
+		System.out.println("Is Authenticated? " + authentication.isAuthenticated());
 		if (u != null) {
 			u.setToken(jwt);
 			userRepository.save(u);
@@ -124,4 +125,21 @@ public class AuthRestAPIs {
 		return ">>> Admin Contents";
 	}
 
+	@GetMapping("/user")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<User> getLoggedInUser(){
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			User u = userRepository.findByUsername(authentication.getName()).orElse(null);
+		return new ResponseEntity<>(u, HttpStatus.OK);
+	}
+
+	@GetMapping("/logout")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<String> logOut(){
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println("Logged in user " + authentication.getName() + "Is login? " + authentication.isAuthenticated());
+		authentication.setAuthenticated(false);
+		return new ResponseEntity<>("Logged out!", HttpStatus.OK);
+	}
 }
