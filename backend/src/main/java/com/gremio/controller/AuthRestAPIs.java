@@ -68,7 +68,13 @@ public class AuthRestAPIs {
 		}
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
+		String message="";
+		if(userDetails != null){
+			message = "Login Success!";
+		} else{
+			message = "Something went wrong. Please try agin!";
+		}
+		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), message));
 	}
 
 	@PostMapping("/signup")
@@ -89,26 +95,10 @@ public class AuthRestAPIs {
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
+		Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+				.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+		roles.add(userRole);
 
-		strRoles.forEach(role -> {
-			switch (role) {
-				case "admin" -> {
-					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-					roles.add(adminRole);
-				}
-				case "pm" -> {
-					Role pmRole = roleRepository.findByName(ERole.ROLE_PM)
-							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-					roles.add(pmRole);
-				}
-				default -> {
-					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
-					roles.add(userRole);
-				}
-			}
-		});
 		user.setRoles(roles);
 		userRepository.save(user);
 

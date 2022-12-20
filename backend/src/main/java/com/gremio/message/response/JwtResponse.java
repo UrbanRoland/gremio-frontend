@@ -10,11 +10,15 @@ public class JwtResponse {
     private String token;
 	private String type = "Bearer";
 	private String username;
+
+	private String message;
+
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities) {
+	public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities, String message) {
 		this.token = accessToken;
 		this.username = username;
 		this.authorities = authorities;
+		this.message = message;
 	}
 }
