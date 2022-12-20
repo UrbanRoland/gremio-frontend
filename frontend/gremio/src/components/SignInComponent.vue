@@ -19,7 +19,7 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
-            <q-btn v-on:click="submit()" unelevated color="light-green-7" size="lg" class="full-width" label="Login" />
+            <q-btn v-on:click="submit()" unelevated color="secondary" size="lg" class="full-width" label="Login" />
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Not reigistered? <router-link to="/signup">Created an Account</router-link></p>

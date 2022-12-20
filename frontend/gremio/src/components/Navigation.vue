@@ -1,7 +1,7 @@
 <template>
     <q-layout view="lHh Lpr lFf">
       <q-header elevated class="glossy">
-        <q-toolbar>
+        <q-toolbar class="bg-secondary">
           <q-btn
             flat
             dense
@@ -134,3 +134,9 @@ export default{
   }
 }
 </script>
+
+<style scoped>
+.q-item.q-router-link--active{
+  color:var(--q-secondary)
+}
+</style>
