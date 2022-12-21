@@ -1,5 +1,5 @@
 <template>
-  <div v-if=" this.$route.path === '/signin' || this.$route.path ==='/signup' ">
+  <div v-if=" this.$route.path === '/signin' || this.$route.path ==='/signup' || this.$route.name === 'NotFoundPage' ">
     <router-view/>
   </div>
   <div v-else>

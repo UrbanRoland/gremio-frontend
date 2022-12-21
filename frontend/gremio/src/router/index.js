@@ -8,17 +8,21 @@ import ReportingComponent from '@/views/ReportingView.vue'
 import SignInComponent from '@/views/SignIn.vue'
 import SignUpComponent from '@/views/SignUp.vue'
 import store from '../store/vuex'
+import NotFound from '@/views/NotFound'
+
+function userIsAuthecticated(){
+  if(store.getters.user == null){
+    return "signin"
+  }
+}
+
  const routes = [
 
   {
     path: '/home',
     name: 'Home',
     component: HomeComponent,
-    beforeEnter(){
-      if(store.getters.user == null){
-        return "signin"
-      }
-    }
+    beforeEnter: userIsAuthecticated
 
   },
   {
@@ -55,6 +59,11 @@ import store from '../store/vuex'
     path: '/signup',
     name: 'SignUp',
     component: SignUpComponent
+  },
+  {
+    path:'/:pathMatch(.*)*',
+    name : 'NotFoundPage',
+    component: NotFound
   }
 ]
 
