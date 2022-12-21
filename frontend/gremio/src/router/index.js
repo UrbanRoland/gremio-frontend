@@ -7,12 +7,19 @@ import PortfoliosComponent from '@/views/PortfoliosView.vue'
 import ReportingComponent from '@/views/ReportingView.vue'
 import SignInComponent from '@/views/SignIn.vue'
 import SignUpComponent from '@/views/SignUp.vue'
+import store from '../store/vuex'
  const routes = [
 
   {
     path: '/home',
     name: 'Home',
     component: HomeComponent,
+    beforeEnter(){
+      if(store.getters.user == null){
+        return "signin"
+      }
+    }
+
   },
   {
     path: '/inbox',

@@ -11,24 +11,15 @@
 </template>
 
 <script>
-import axios from 'axios'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'HomeComponent',
-
   components: {
     
   },
-  data(){
-    return {
-      user: null
-    }
-  },
-
-  async created(){
-    const response = await axios.get('api/auth/user')
-    console.log(response);
-    this.user = response.data;
+  computed:{
+    ...mapGetters(['user'])
   }
 }
 </script>

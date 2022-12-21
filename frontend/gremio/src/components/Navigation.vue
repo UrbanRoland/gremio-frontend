@@ -26,8 +26,8 @@
       <template v-slot:label>
         <div class="row items-center no-wrap">
           <q-icon left name="person" />
-          <div class="text-center">
-            Loggen in User
+          <div class="text-center" v-if="user">
+            {{ user.name }}
           </div>
         </div>
       </template>
@@ -43,10 +43,8 @@
             <q-item-label>My settings</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable v-close-popup @click="onItemClick">
-          <q-item-section>
-            <q-item-label>Logout</q-item-label>
-          </q-item-section>
+        <q-item clickable v-close-popup  v-if="user" tag="a" href="javascript:void(0)" @click="handleClick">
+            Logout
         </q-item>
       </q-list>
     </q-btn-dropdown>
@@ -124,9 +122,20 @@
 
 <script>
 import { ref } from 'vue'
+import {mapGetters} from 'vuex'
+
 export default{
     name:'NavigationMenu',
+    methods:{
+      handleClick() {
+        this.$store.dispatch('user', null)
+        this.$router.push('/signin');
+      }
+    },
 
+    computed: {
+      ...mapGetters(['user'])
+    },
     setup () {
     return {
         leftDrawerOpen: ref(false)

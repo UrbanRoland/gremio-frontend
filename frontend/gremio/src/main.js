@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
 import { Quasar } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
 import './axios'
-createApp(App).use(Quasar, quasarUserOptions).use(store).use(router).mount('#app')
+import store from './store/vuex'
+createApp(App).use(Quasar, quasarUserOptions).use(router).use(store).mount('#app')

@@ -46,6 +46,7 @@ export default {
 
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('username', response.data.username)
+        this.$store.dispatch('user', response.data.user)
           this.$router.push("/home")
           console.log("Login " + JSON.stringify(response.data))
 
