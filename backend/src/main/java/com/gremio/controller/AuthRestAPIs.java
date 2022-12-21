@@ -60,22 +60,12 @@ public class AuthRestAPIs {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		String jwt = jwtProvider.generateJwtToken(authentication);
-		User u = userRepository.findByUsername(loginRequest.getUsername()).orElse(null);
 
-		System.out.println("Is Authenticated? " + authentication.isAuthenticated());
-		if (u != null) {
-			u.setToken(jwt);
-			userRepository.save(u);
-		}
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		User loggedInUser = userRepository.findEmailAndUsernameAndNameAndRolesByUsername(userDetails.getUsername());
+		loggedInUser.setPassword("");
 
-		String message="";
-		if(userDetails != null){
-			message = "Login Success!";
-		} else{
-			message = "Something went wrong. Please try agin!";
-		}
-		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), message));
+		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), loggedInUser));
 	}
 
 	@PostMapping("/signup")
@@ -125,21 +115,4 @@ public class AuthRestAPIs {
 		return ">>> Admin Contents";
 	}
 
-	@GetMapping("/user")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<User> getLoggedInUser(){
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			User u = userRepository.findByUsername(authentication.getName()).orElse(null);
-		return new ResponseEntity<>(u, HttpStatus.OK);
-	}
-
-	@GetMapping("/logout")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<String> logOut(){
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("Logged in user " + authentication.getName() + "Is login? " + authentication.isAuthenticated());
-		authentication.setAuthenticated(false);
-		return new ResponseEntity<>("Logged out!", HttpStatus.OK);
-	}
 }

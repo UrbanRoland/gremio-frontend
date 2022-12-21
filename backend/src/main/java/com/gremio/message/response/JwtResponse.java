@@ -1,5 +1,6 @@
 package com.gremio.message.response;
 
+import com.gremio.model.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,14 +12,14 @@ public class JwtResponse {
 	private String type = "Bearer";
 	private String username;
 
-	private String message;
+	private User user;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities, String message) {
+	public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities, User user) {
 		this.token = accessToken;
 		this.username = username;
 		this.authorities = authorities;
-		this.message = message;
+		this.user = user;
 	}
 }
