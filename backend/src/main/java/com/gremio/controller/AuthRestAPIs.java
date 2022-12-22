@@ -9,10 +9,8 @@ import com.gremio.message.response.ResponseMessage;
 import com.gremio.model.Role;
 import com.gremio.model.ERole;
 import com.gremio.model.User;
-import com.gremio.repository.RoleRepository;
-import com.gremio.repository.UserRepository;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
+import com.gremio.service.RoleServiceImpl;
+import com.gremio.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,10 +36,10 @@ public class AuthRestAPIs {
 	AuthenticationManager authenticationManager;
 
 	@Autowired
-	UserRepository userRepository;
+	UserDetailsServiceImpl userDetailsService;
 
 	@Autowired
-	RoleRepository roleRepository;
+	RoleServiceImpl roleService;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -62,7 +58,7 @@ public class AuthRestAPIs {
 		String jwt = jwtProvider.generateJwtToken(authentication);
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		User loggedInUser = userRepository.findEmailAndUsernameAndNameAndRolesByUsername(userDetails.getUsername());
+		User loggedInUser = userDetailsService.findEmailAndUsernameAndNameAndRolesByUsername(userDetails.getUsername());
 		loggedInUser.setPassword("");
 
 		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), loggedInUser));
@@ -70,13 +66,13 @@ public class AuthRestAPIs {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
+		if (userDetailsService.existsByUsername(signUpRequest.getUsername())) {
+			return new ResponseEntity<>(new ResponseMessage("Username is already taken!"),
 					HttpStatus.BAD_REQUEST);
 		}
 
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return new ResponseEntity<>(new ResponseMessage("Fail -> Email is already in use!"),
+		if (userDetailsService.existsByEmail(signUpRequest.getEmail())) {
+			return new ResponseEntity<>(new ResponseMessage("Email is already in use!"),
 					HttpStatus.BAD_REQUEST);
 		}
 
@@ -86,12 +82,12 @@ public class AuthRestAPIs {
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
-		Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-				.orElseThrow(() -> new RuntimeException("Fail! -> Cause: User Role not find."));
+		Role userRole = roleService.findByName(ERole.ROLE_USER)
+				.orElseThrow(() -> new RuntimeException("User Role not find."));
 		roles.add(userRole);
 
 		user.setRoles(roles);
-		userRepository.save(user);
+		userDetailsService.save(user);
 
 		return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
 	}
