@@ -42,6 +42,7 @@
 import axios from 'axios';
 import { useQuasar } from 'quasar'
 export default {
+  name: 'SignUp',
   setup () {
     const $q = useQuasar()
     return {

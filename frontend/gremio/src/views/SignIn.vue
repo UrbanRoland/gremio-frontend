@@ -21,12 +21,10 @@
               </q-card-actions>
             </q-form>
           </q-card-section>
-
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Not reigistered? <router-link to="/signup">Created an Account</router-link></p>
           </q-card-section>
         </q-card>
-        
       </div>
     </div>
   </q-page>
@@ -38,17 +36,49 @@
 
 <script>
 import axios from 'axios'
+import { useQuasar } from 'quasar'
 export default {
+    name: 'SignIn',
+    setup () {
+    const $q = useQuasar()
+    return {
+      triggerNegative (msg) {
+        $q.notify({
+          type: 'negative',
+          message: msg
+        })
+      },
+      triggerOngoing () {
+        const notif = $q.notify({
+          type: 'ongoing',
+          message: 'Login please wait...'
+        })
+        setTimeout(() => {
+          notif({
+            type: 'positive',
+            message: 'Success!',
+            timeout: 1000,
+            actions: this.$router.push("/home")
+          })
+        }, 4000)
+      }
+    }
+  },
 
     methods: {
       async handleSubmit(){
-        const response = await axios.post("/api/auth/signin", this.formData);
+        return await axios.post("/api/auth/signin", this.formData)
+          .then((response) => {
+            this.$store.dispatch('user', response.data.user)
+            this.triggerOngoing()
+          })
+          .catch(err => {
+            this.triggerNegative(err.response.data.message)
+          })
 
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('username', response.data.username)
-        this.$store.dispatch('user', response.data.user)
-          this.$router.push("/home")
-          console.log("Login " + JSON.stringify(response.data))
+        
+        
+        //console.log("Login " + JSON.stringify(response.data))
 
       }
     },
