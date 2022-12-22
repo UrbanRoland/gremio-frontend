@@ -36,20 +36,47 @@
   </q-page>
   </q-page-container>
 </q-layout>
-
-
 </template>
 
 <script>
 import axios from 'axios';
+import { useQuasar } from 'quasar'
 export default {
+  setup () {
+    const $q = useQuasar()
+    return {
+      triggerNegative (msg) {
+        $q.notify({
+          type: 'negative',
+          message: msg
+        })
+      },
+      triggerOngoing () {
+        const notif = $q.notify({
+          type: 'ongoing',
+          message: 'Creating you account please wait...'
+        })
+        setTimeout(() => {
+          notif({
+            type: 'positive',
+            message: 'Success!',
+            timeout: 1000,
+            actions: this.$router.push("/signin")
+          })
+        }, 4000)
+      }
+    }
+  },
+
     methods: {
         async handleSubmit(){
-        const response = await axios.post("api/auth/signup", this.formData);
- 
-            console.log("Submited!" + response)
-
-           // this.$router.push("/signin")
+          return await axios.post("api/auth/signup", this.formData)
+            .then(() => {
+              this.triggerOngoing()
+            })
+            .catch( err => {
+              this.triggerNegative(err.response.data.message)
+            })
         }
     },
   data () {
