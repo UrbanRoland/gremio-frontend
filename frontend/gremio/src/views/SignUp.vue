@@ -10,18 +10,27 @@
         <q-card square bordered class="q-pa-lg shadow-1">
           <q-card-section>
             <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-                <q-input square filled clearable v-model="formData.name" type="text" label="name"
+                <q-input square filled clearable v-model="formData.name" type="text" 
+                label="name" hint="Name minimum 3 character!"
                 lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type your name!']"/>
+                :rules="[ 
+                  val => val && val.length > 0 || 'Please type your name!',
+                  val => val.length > 0 && val.length >= 3 || 'Must be at least 3 character!']"/>
                 <q-input square filled clearable v-model="formData.email" type="email" label="email"
               lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type your email!']"/>
-              <q-input square filled clearable v-model="formData.username" type="text" label="username"
+              <q-input square filled clearable v-model="formData.username" type="text" 
+              label="username" hint="Username minimum 3 character!"
               lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type your username!']"/>
-              <q-input square filled clearable v-model="formData.password" type="password" label="password"
+                :rules="[ 
+                  val => val && val.length > 0 || 'Please type your username!',
+                  val => val.length > 0 && val.length >= 3 || 'Must be at least 3 character!']"/>
+              <q-input square filled clearable v-model="formData.password" type="password" 
+              label="password" hint="Password minimum 6 character!"
               lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type your password!']" />
+                :rules="[ 
+                  val => val && val.length > 0 || 'Please type your password!',
+                  val => val.length > 0 && val.length >= 6 || 'Must be at least 6 character!']" />
               <q-card-actions class="q-px-md">
                 <q-btn unelevated color="secondary" type="submit" size="lg" class="full-width" label="Submit" />
               </q-card-actions>
