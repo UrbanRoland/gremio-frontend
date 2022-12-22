@@ -14,13 +14,15 @@ import com.gremio.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -48,10 +50,17 @@ public class AuthRestAPIs {
 	JwtProvider jwtProvider;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest){
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) throws BadCredentialsException {
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		Authentication authentication;
+		try {
+			authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+		} catch (BadCredentialsException e){
+			return new ResponseEntity<>(new ResponseMessage("Invalid Credentials!"),
+					HttpStatus.BAD_REQUEST);
+		}
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -59,8 +68,7 @@ public class AuthRestAPIs {
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		User loggedInUser = userDetailsService.findEmailAndUsernameAndNameAndRolesByUsername(userDetails.getUsername());
-		loggedInUser.setPassword("");
-
+			loggedInUser.setPassword("");
 		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities(), loggedInUser));
 	}
 
@@ -80,7 +88,6 @@ public class AuthRestAPIs {
 		User user = new User(signUpRequest.getName(), signUpRequest.getUsername(), signUpRequest.getEmail(),
 				encoder.encode(signUpRequest.getPassword()));
 
-		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
 		Role userRole = roleService.findByName(ERole.ROLE_USER)
 				.orElseThrow(() -> new RuntimeException("User Role not find."));
@@ -91,24 +98,4 @@ public class AuthRestAPIs {
 
 		return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
 	}
-    
-
-	@GetMapping("/test/user")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public String userAccess() {
-		return ">>> User Contents!";
-	}
-
-	@GetMapping("/test/pm")
-	@PreAuthorize("hasRole('PM') or hasRole('ADMIN')")
-	public String projectManagementAccess() {
-		return ">>> Project Management Board";
-	}
-	
-	@GetMapping("/test/admin")
-	@PreAuthorize("hasRole('ADMIN')")
-	public String adminAccess() {
-		return ">>> Admin Contents";
-	}
-
 }
