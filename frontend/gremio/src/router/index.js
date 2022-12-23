@@ -9,6 +9,7 @@ import SignInComponent from '@/views/SignIn.vue'
 import SignUpComponent from '@/views/SignUp.vue'
 import store from '../store/vuex'
 import NotFound from '@/views/NotFound'
+import MyProfileComponent from '@/views/MyProfile.vue'
 
 function userIsAuthecticated(){
   if(store.getters.user == null){
@@ -23,32 +24,36 @@ function userIsAuthecticated(){
     name: 'Home',
     component: HomeComponent,
     beforeEnter: userIsAuthecticated
-
   },
   {
     path: '/inbox',
     name: 'Inbox',
-    component: InboxComponent
+    component: InboxComponent,
+    beforeEnter: userIsAuthecticated
   },
   {
     path: '/my-tasks',
     name: 'MyTasks',
-    component: MyTaskComponent
+    component: MyTaskComponent,
+    beforeEnter: userIsAuthecticated
   },
   {
     path: '/goals',
     name: 'Goals',
-    component: GoalsComponent
+    component: GoalsComponent,
+    beforeEnter: userIsAuthecticated
   },
   {
     path: '/portfolios',
     name: 'Portfolios',
-    component: PortfoliosComponent
+    component: PortfoliosComponent,
+    beforeEnter: userIsAuthecticated
   },
   {
     path: '/reporting',
     name: 'Reporting',
-    component: ReportingComponent
+    component: ReportingComponent,
+    beforeEnter: userIsAuthecticated
   },
   {
     path: '/signin',
@@ -59,6 +64,11 @@ function userIsAuthecticated(){
     path: '/signup',
     name: 'SignUp',
     component: SignUpComponent
+  },
+  {
+    path: '/myprofile',
+    name: 'MyProfile',
+    component: MyProfileComponent
   },
   {
     path:'/:pathMatch(.*)*',

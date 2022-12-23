@@ -33,11 +33,7 @@
       </template>
 
       <q-list>
-        <q-item clickable v-close-popup @click="onItemClick">
-          <q-item-section>
-            <q-item-label>My profile</q-item-label>
-          </q-item-section>
-        </q-item>
+        <q-item clickable v-close-popup @click="onItemClick" tag="router-link" to="/myprofile" > My profile</q-item>
         <q-item clickable v-close-popup @click="onItemClick">
           <q-item-section>
             <q-item-label>My settings</q-item-label>
@@ -123,24 +119,41 @@
 <script>
 import { ref } from 'vue'
 import {mapGetters} from 'vuex'
+import { useQuasar } from 'quasar'
 
 export default{
     name:'NavigationMenu',
+    setup () {
+    const $q = useQuasar()
+    return {
+      leftDrawerOpen: ref(false),
+      triggerOngoing () {
+        const notif = $q.notify({
+          type: 'ongoing',
+          message: 'Logout please wait...'
+        })
+        setTimeout(() => {
+          notif({
+            type: 'positive',
+            message: 'Success!',
+            timeout: 1000,
+            actions: this.$router.push("/signin"),
+          })
+        }, 4000)
+      }
+    }
+  },
     methods:{
-      handleClick() {
-        this.$store.dispatch('user', null)
-        this.$router.push('/signin');
+      async handleClick() {
+        this.triggerOngoing();
+        this.$store.dispatch('user', null);
+        localStorage.removeItem('token');
       }
     },
 
     computed: {
       ...mapGetters(['user'])
     },
-    setup () {
-    return {
-        leftDrawerOpen: ref(false)
-    }
-  }
 }
 </script>
 

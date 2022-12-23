@@ -78,6 +78,7 @@ export default {
         return await axios.post("/api/auth/signin", this.formData)
           .then((response) => {
             this.$store.dispatch('user', response.data.user)
+            localStorage.setItem('token', response.data.token)
             this.triggerOngoing()
           })
           .catch(err => {

@@ -1,6 +1,5 @@
 import {createStore} from 'vuex'
-
-
+import createPersistedState from "vuex-persistedstate";
 
 const state = {
     user:null
@@ -8,6 +7,11 @@ const state = {
 
 const store = new createStore({
     state,
+    plugins: [
+        createPersistedState({
+          storage: window.sessionStorage,
+        }),
+      ],
     getters:{
         user: (state) => {
             return state.user;
