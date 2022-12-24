@@ -1,77 +1,66 @@
 <template>
-    <q-layout>
-        <q-page-container>
-          <q-page class="bg-grey-9 window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-white q-my-md">Sign in</h5>
+  <!--
+    This example requires updating your template:
+
+    ```
+    <html class="h-full bg-gray-50">
+    <body class="h-full">
+    ```
+  -->
+  <div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-md space-y-8">
+      <div>
+        <img class="mx-auto h-12 w-auto" src="../assets/logo.svg" alt="Your Company" />
+        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+        </p>
       </div>
-      <div class="row">
-        <q-card square bordered class="q-pa-lg shadow-1">
-          <q-card-section>
-            <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-              <q-input square filled clearable v-model="formData.username" type="text" 
-              label="username" hint="Username minimum 3 character!"
-              lazy-rules
-                :rules="[ 
-                  val =>  val !== null && val !== '' || 'Please type your username!',
-                  val => val.length > 0 && val.length >= 3 || 'Must be at least 3 character!']"
-                
-                />
-              <q-input square filled clearable v-model="formData.password" type="password" 
-              label="password" hint="Password minimum 6 character!"
-              lazy-rules
-                :rules="[ 
-                  val => val && val.length > 0 || 'Please type your password!',
-                  val => val.length > 0 && val.length >= 6 || 'Must be at least 6 character!']" />
-              <q-card-actions class="q-px-md">
-                <q-btn unelevated color="secondary" size="lg" type="submit" class="full-width" label="Submit" />
-              </q-card-actions>
-            </q-form>
-          </q-card-section>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not reigistered? <router-link to="/signup">Created an Account</router-link></p>
-          </q-card-section>
-        </q-card>
-      </div>
+      <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
+        <input type="hidden" name="remember" value="true" />
+        <div class="-space-y-px rounded-md shadow-sm">
+          <div>
+            <label for="username" class="sr-only">Username</label>
+            <input id="username" v-model="formData.username" name="username" type="text"  required="" class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" placeholder="Username" />
+          </div>
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" v-model="formData.password" name="password" type="password" autocomplete="current-password" required="" class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm" placeholder="Password" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+            <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+          </div>
+
+          <div class="text-sm">
+            <router-link to="/signup" class="font-medium text-indigo-600 hover:text-indigo-500">Not reigistered? Create account</router-link>
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+              <LockClosedIcon class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+            </span>
+            Sign in
+          </button>
+        </div>
+      </form>
     </div>
-  </q-page>
-  </q-page-container>
-</q-layout>
-
-
+  </div>
 </template>
+
 
 <script>
 import axios from 'axios'
-import { useQuasar } from 'quasar'
+import { LockClosedIcon } from '@heroicons/vue/20/solid'
 export default {
     name: 'SignIn',
-    setup () {
-    const $q = useQuasar()
-    return {
-      triggerNegative (msg) {
-        $q.notify({
-          type: 'negative',
-          message: msg
-        })
-      },
-      triggerOngoing () {
-        const notif = $q.notify({
-          type: 'ongoing',
-          message: 'Login please wait...'
-        })
-        setTimeout(() => {
-          notif({
-            type: 'positive',
-            message: 'Success!',
-            timeout: 1000,
-            actions: this.$router.push("/home")
-          })
-        }, 4000)
-      }
-    }
-  },
+    components:{
+      LockClosedIcon
+    },
 
     methods: {
       async handleSubmit(){
@@ -79,7 +68,7 @@ export default {
           .then((response) => {
             this.$store.dispatch('user', response.data.user)
             localStorage.setItem('token', response.data.token)
-            this.triggerOngoing()
+            this.$router.push("/home")
           })
           .catch(err => {
             this.triggerNegative(err.response.data.message)
@@ -99,7 +88,5 @@ export default {
 </script>
 
 <style scope>
-.q-card {
-  width: 360px;
-}
+
 </style>

@@ -1,91 +1,93 @@
 <template>
-    <q-layout>
-        <q-page-container>
-          <q-page class="bg-grey-9 window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-white q-my-md">Sign up</h5>
-      </div>
-      <div class="row">
-        <q-card square bordered class="q-pa-lg shadow-1">
-          <q-card-section>
-            <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-                <q-input square filled clearable v-model="formData.name" type="text" 
-                label="name" hint="Name minimum 3 character!"
-                lazy-rules
-                :rules="[ 
-                  val => val && val.length > 0 || 'Please type your name!',
-                  val => val.length > 0 && val.length >= 3 || 'Must be at least 3 character!']"/>
-                <q-input square filled clearable v-model="formData.email" type="email" label="email"
-              lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please type your email!']"/>
-              <q-input square filled clearable v-model="formData.username" type="text" 
-              label="username" hint="Username minimum 3 character!"
-              lazy-rules
-                :rules="[ 
-                  val => val && val.length > 0 || 'Please type your username!',
-                  val => val.length > 0 && val.length >= 3 || 'Must be at least 3 character!']"/>
-              <q-input square filled clearable v-model="formData.password" type="password" 
-              label="password" hint="Password minimum 6 character!"
-              lazy-rules
-                :rules="[ 
-                  val => val && val.length > 0 || 'Please type your password!',
-                  val => val.length > 0 && val.length >= 6 || 'Must be at least 6 character!']" />
-              <q-card-actions class="q-px-md">
-                <q-btn unelevated color="secondary" type="submit" size="lg" class="full-width" label="Submit" />
-              </q-card-actions>
-            </q-form>
-          </q-card-section>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">You have an account? <router-link to="/signin">Login</router-link></p>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
-  </q-page>
-  </q-page-container>
-</q-layout>
+          <div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2" >
+                <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full max-w-md space-y-8">
+                    <h1 class="mb-8 text-3xl text-center">Sign up</h1>
+                    <form @submit.prevent="handleSubmit">
+                      <input 
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="fullname"
+                        placeholder="Full Name"
+                        v-model="formData.name" />
+
+                      <input 
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="Username"
+                        placeholder="Username"
+                        v-model="formData.username" />
+
+                      <input 
+                        type="text"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="email"
+                        placeholder="Email" 
+                        v-model="formData.email"/>
+
+                      <input 
+                        type="password"
+                        class="block border border-grey-light w-full p-3 rounded mb-4"
+                        name="password"
+                        placeholder="Password"
+                        v-model="formData.password" />
+                      <input 
+                        type="password"
+                        class="block border border-grey-light w-full p-3 rounded mb-4 "
+                        name="confirm_password"
+                        placeholder="Confirm Password"
+                        v-model="formData.confirmPassword" />
+
+                    <button type="submit" class="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <PlusIcon class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" aria-hidden="true" />
+                      </span>
+                         Sign up
+                    </button>
+                    <div class="text-center text-sm text-grey-dark mt-4">
+                        By signing up, you agree to the 
+                        <a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
+                            Terms of Service
+                        </a> and 
+                        <a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
+                            Privacy Policy
+                        </a>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="text-grey-dark mt-6">
+                    Already have an account? 
+                    <router-link class="no-underline border-b border-blue text-blue" to="/signin">
+                        Log in
+                    </router-link>.
+                </div>
+            </div>
+        </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { useQuasar } from 'quasar'
+import { PlusIcon } from '@heroicons/vue/20/solid'
 export default {
   name: 'SignUp',
-  setup () {
-    const $q = useQuasar()
-    return {
-      triggerNegative (msg) {
-        $q.notify({
-          type: 'negative',
-          message: msg
-        })
-      },
-      triggerOngoing () {
-        const notif = $q.notify({
-          type: 'ongoing',
-          message: 'Creating you account please wait...'
-        })
-        setTimeout(() => {
-          notif({
-            type: 'positive',
-            message: 'Success!',
-            timeout: 1000,
-            actions: this.$router.push("/signin")
-          })
-        }, 4000)
-      }
-    }
+  components: {
+    PlusIcon
   },
-
     methods: {
         async handleSubmit(){
+          console.log("sasdasmadkaskdmsdamdasd")
+          console.log("aaaaaaaaaaaaaaaaaaaa"+ this.fromData)
+          if(this.fromData.password !== this.formData.confirmPassword){
+            alert("nem egyenlo")
+            return false
+          }
           return await axios.post("api/auth/signup", this.formData)
             .then(() => {
-              this.triggerOngoing()
+              this.$router.push("/signin")
             })
             .catch( err => {
-              this.triggerNegative(err.response.data.message)
+              console.log(err.response.data.message)
             })
         }
     },
@@ -95,7 +97,8 @@ export default {
             name: '',
             email:'',
             username: '',
-            password: ''
+            password: null,
+            confirmPassword: null
         }
 
     }
@@ -104,7 +107,5 @@ export default {
 </script>
 
 <style scope>
-.q-card {
-  width: 360px;
-}
+
 </style>
