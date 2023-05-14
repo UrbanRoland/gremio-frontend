@@ -1,70 +1,77 @@
 package com.gremio.config;
 
-
-import com.gremio.jwt.JwtAuthEntryPoint;
 import com.gremio.jwt.JwtAuthTokenFilter;
-import com.gremio.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gremio.jwt.JwtAuthFilter;
+import com.gremio.service.interfaces.JwtService;
+import com.gremio.service.interfaces.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-		prePostEnabled = true
-)
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter  {
+@RequiredArgsConstructor
+@EnableMethodSecurity
+public class SpringSecurityConfig {
     
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private JwtAuthEntryPoint unauthorizedHandler;
-
-    @Bean
-    public JwtAuthTokenFilter authenticationJwtTokenFilter() {
-        return new JwtAuthTokenFilter();
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
+    private final PasswordEncoder passwordEncoder;
+    private final ConversionService conversionService;
+    private final JwtService jwtService;
+    private final UserService userService;
+    private final AuthenticationConfiguration authConfig;
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public DaoAuthenticationProvider authenticationProvider() {
+        final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+        authProvider.setUserDetailsService(userService);
+        authProvider.setPasswordEncoder(passwordEncoder);
+
+        return authProvider;
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(
+            final AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().
-                authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        //Add a filter to validate the tokens with every request
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    protected SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
+       return http
+               .cors()
+               .and()
+               .authorizeHttpRequests()
+               .requestMatchers("/api/auth/**", "/login/**")
+               .permitAll()
+               .anyRequest().authenticated()
+               .and()
+               .addFilterBefore(new JwtAuthFilter(authenticationManager(authConfig), conversionService, jwtService, userService), UsernamePasswordAuthenticationFilter.class)
+               .addFilter(new JwtAuthTokenFilter(authenticationManager(authConfig), jwtService, userService))
+               .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+               .and()
+               .exceptionHandling()
+               .authenticationEntryPoint((httpServletRequest, httpServletResponse, e) ->
+                       httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "unauthorized"))
+               .accessDeniedHandler(new AccessDeniedHandlerImpl())
+               .and()
+               .logout()
+               .permitAll()
+               .and()
+               .csrf().disable()
+               .build();
     }
 }

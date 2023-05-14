@@ -1,63 +1,59 @@
 package com.gremio.jwt;
 
-
-import com.gremio.service.UserDetailsServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gremio.service.interfaces.JwtService;
+import com.gremio.service.interfaces.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
+public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
+    private static final int CONFLICT_CODE = 409;
+    private final JwtService jwtService;
+    private final UserService userService;
+    public JwtAuthTokenFilter(final AuthenticationManager authManager, final JwtService jwtService, final UserService userService) {
+        super(authManager);
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
 
-public class JwtAuthTokenFilter extends OncePerRequestFilter{
+    @Override
+    protected void doFilterInternal(final HttpServletRequest request,
+                final HttpServletResponse response,
+                final FilterChain filterChain) throws ServletException, IOException {
 
-    @Autowired
-	private JwtProvider tokenProvider;
+        final String header = request.getHeader("Authorization");
 
-	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
+        if (header != null && header.startsWith("Bearer ")) {
 
-	private static final Logger logger = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
+            try {
+                final String token = header.substring(7);
+                final String email = jwtService.extractUsername(token);
+                final UserDetails user = loadUserByUsername(email);
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-		try {
+            } catch (final ExpiredJwtException | PreAuthenticatedCredentialsNotFoundException e) {
+                response.setStatus(CONFLICT_CODE);
+                return;
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
 
-			String jwt = getJwt(request);
-			if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
-				String username = tokenProvider.getUserNameFromJwtToken(jwt);
+    private UserDetails loadUserByUsername(final String email) throws PreAuthenticatedCredentialsNotFoundException {
+        final UserDetails user = userService.loadUserByUsername(email);
+        if (user == null) {
+            throw new PreAuthenticatedCredentialsNotFoundException("User not found");
+        }
+        return user;
+    }
 
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-		} catch (Exception e) {
-			logger.error("Can NOT set user authentication", e);
-		}
-
-		filterChain.doFilter(request, response);
-	}
-
-    private String getJwt(HttpServletRequest request) {
-		String authHeader = request.getHeader("Authorization");
-
-		if (authHeader != null && authHeader.startsWith("Bearer ")) {
-			return authHeader.replace("Bearer ", "");
-		}
-		return null;
-	}
-    
-}
+ }
