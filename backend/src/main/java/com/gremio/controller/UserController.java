@@ -1,6 +1,6 @@
 package com.gremio.controller;
 
-import com.gremio.annotations.UserRequired;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

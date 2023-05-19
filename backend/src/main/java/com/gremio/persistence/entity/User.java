@@ -1,4 +1,4 @@
-package com.gremio.model;
+package com.gremio.persistence.entity;
 
 import com.gremio.enums.RoleType;
 import jakarta.persistence.Column;
@@ -32,6 +32,7 @@ public class User implements UserDetails {
     private String username;
     private String email;
     private String password;
+    private String refreshToken;
 
     @Column(columnDefinition = "varchar(128) default 'ROLE_READ_ONLY'")
     @Enumerated(EnumType.STRING)

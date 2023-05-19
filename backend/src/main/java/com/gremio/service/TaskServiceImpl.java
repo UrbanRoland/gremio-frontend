@@ -1,6 +1,6 @@
 package com.gremio.service;
 
-import com.gremio.model.Task;
+import com.gremio.persistence.entity.Task;
 import com.gremio.repository.TaskRepository;
 import com.gremio.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.gremio.controller;
 
-import com.gremio.model.Task;
+import com.gremio.persistence.entity.Task;
 import com.gremio.service.TaskServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

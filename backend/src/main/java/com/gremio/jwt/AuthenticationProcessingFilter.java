@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gremio.exception.NotFoundException;
 import com.gremio.model.dto.request.AuthRequest;
 import com.gremio.model.dto.response.AuthResponse;
-import com.gremio.model.User;
+import com.gremio.persistence.entity.User;
 import com.gremio.service.interfaces.JwtService;
 import com.gremio.service.interfaces.UserService;
 import jakarta.servlet.FilterChain;
@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,18 +23,17 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedCredentialsNotFoundException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Slf4j
-public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
+public class AuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
     private static final String LOGIN_ENDPOINT = "/login";
     private final AuthenticationManager authenticationManager;
     private final ConversionService conversionService;
     private final JwtService jwtService;
     private final UserService userService;
 
-    public JwtAuthFilter(final AuthenticationManager authenticationManager,
-                         final ConversionService conversionService,
-                         final JwtService jwtService,
-                         final UserService userService) {
+    public AuthenticationProcessingFilter(final AuthenticationManager authenticationManager,
+                                          final ConversionService conversionService,
+                                          final JwtService jwtService,
+                                          final UserService userService) {
         super(new AntPathRequestMatcher(LOGIN_ENDPOINT, HttpMethod.POST.name()));
         this.authenticationManager = authenticationManager;
         this.conversionService = conversionService;
@@ -73,7 +71,7 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
             throws IOException {
 
         final User user = (User)auth.getPrincipal();
-        //user.setRefreshToken(jwtService.generateRefreshToken(user.getId().toString()));
+        user.setRefreshToken(jwtService.generateRefreshToken(user));
         userService.save(user);
 
         final AuthResponse authResponse = Optional.ofNullable(conversionService.convert(user, AuthResponse.class))

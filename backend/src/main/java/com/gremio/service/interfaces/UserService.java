@@ -1,6 +1,6 @@
 package com.gremio.service.interfaces;
 
-import com.gremio.model.User;
+import com.gremio.persistence.entity.User;
 import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

@@ -1,5 +1,7 @@
 package com.gremio.service;
 
+import com.gremio.persistence.entity.User;
+import com.gremio.model.dto.response.AuthResponse;
 import com.gremio.service.interfaces.JwtService;
 import com.gremio.service.interfaces.UserService;
 import io.jsonwebtoken.Claims;
@@ -15,6 +17,7 @@ import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 @Service
@@ -22,19 +25,23 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret.key}")
-    private String jwtSecret;
+    private String jwtSecretKey;
     @Value("${jwt.token.expiration}")
     private long jwtExpirationInMinutes;
     @Value("${jwt.refresh.expiration}")
     private long refreshExpirationInMinutes;
+    @Value("${jwt.refresh.secret.key}")
+    private String jwtSecretRefreshKey;
+
     private final UserService userService;
+    private final ConversionService conversionService;
 
     public String extractUsername(final String token) {
-       return extractClaim(token, Claims::getSubject);
+       return extractClaim(token, Claims::getSubject, getSignInKey());
    }
 
-    public <T> T extractClaim(final String token, final  Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+    public <T> T extractClaim(final String token, final  Function<Claims, T> claimsResolver, final Key key) {
+        final Claims claims = extractAllClaims(token, key);
         return claimsResolver.apply(claims);
     }
 
@@ -46,24 +53,40 @@ public class JwtServiceImpl implements JwtService {
             final Map<String, Object> extraClaims,
             final UserDetails userDetails
     ) {
-        return buildToken(extraClaims, userDetails, jwtExpirationInMinutes);
+        return buildToken(extraClaims, userDetails, jwtExpirationInMinutes, getSignInKey());
     }
 
+    public String generateRefreshToken(final UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
     public String generateRefreshToken(
+            final Map<String, Object> extraClaims,
             final UserDetails userDetails
     ) {
-        return buildToken(new HashMap<>(), userDetails, jwtExpirationInMinutes);
+        return buildToken(extraClaims, userDetails, refreshExpirationInMinutes, getRefreshKey());
     }
-
-    public boolean isTokenValid(final String token, final  UserDetails userDetails) {
+        
+        public boolean isTokenValid(final String token, final  UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public AuthResponse refreshAuthToken(final String token) {
+        final User user = userService.findUserByEmail(extractUsernameForRefreshToken(token));
+
+        final AuthResponse authResponse = conversionService.convert(user, AuthResponse.class);
+        
+        if (authResponse != null) {
+            authResponse.setAccessToken(this.generateToken(user));
+        }
+        return authResponse;
     }
 
     private String buildToken(
             final Map<String, Object> extraClaims,
             final UserDetails userDetails,
-            final long expiration
+            final long expiration,
+            final Key signingKey
     ) {
         return Jwts
                 .builder()
@@ -71,7 +94,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -80,20 +103,26 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Date extractExpiration(final String token) {
-        return extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration, getSignInKey());
     }
-
-    private Claims extractAllClaims(final String token) {
+    private String extractUsernameForRefreshToken(final String token) {
+        return extractClaim(token, Claims::getSubject, getRefreshKey());
+    }
+    private Claims extractAllClaims(final String token, final Key key) {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
     private Key getSignInKey() {
-        final byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        final byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+    private Key getRefreshKey() {
+        final byte[] keyBytes = Decoders.BASE64.decode(jwtSecretRefreshKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

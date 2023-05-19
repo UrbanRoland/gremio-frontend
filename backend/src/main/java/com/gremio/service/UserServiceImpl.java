@@ -2,7 +2,7 @@ package com.gremio.service;
 
 import com.gremio.enums.RoleType;
 import com.gremio.exception.NotFoundException;
-import com.gremio.model.User;
+import com.gremio.persistence.entity.User;
 import com.gremio.repository.UserRepository;
 import com.gremio.service.interfaces.UserService;
 import jakarta.validation.ValidationException;

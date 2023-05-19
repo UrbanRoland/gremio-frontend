@@ -1,6 +1,6 @@
 package com.gremio.converter.user;
 
-import com.gremio.model.User;
+import com.gremio.persistence.entity.User;
 import com.gremio.model.dto.UserDetailsDto;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

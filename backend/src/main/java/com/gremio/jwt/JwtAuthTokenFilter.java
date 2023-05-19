@@ -33,13 +33,9 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         final String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith("Bearer ")) {
-
+            final String token = header.substring(7);
             try {
-                final String token = header.substring(7);
-                final String email = jwtService.extractUsername(token);
-                final UserDetails user = loadUserByUsername(email);
-                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-
+                processToken(token);
             } catch (final ExpiredJwtException | PreAuthenticatedCredentialsNotFoundException e) {
                 response.setStatus(CONFLICT_CODE);
                 return;
@@ -48,6 +44,18 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(request, response);
     }
 
+    private void processToken(final String token) {
+        final String email = jwtService.extractUsername(token);
+        final UserDetails user = loadUserByUsername(email);
+        if (jwtService.isTokenValid(token, user)) {
+            authenticateUser(user);
+        }
+    }
+
+    private void authenticateUser(final UserDetails user) {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+    }
+    
     private UserDetails loadUserByUsername(final String email) throws PreAuthenticatedCredentialsNotFoundException {
         final UserDetails user = userService.loadUserByUsername(email);
         if (user == null) {

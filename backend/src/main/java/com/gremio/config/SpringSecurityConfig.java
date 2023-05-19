@@ -1,7 +1,7 @@
 package com.gremio.config;
 
+import com.gremio.jwt.AuthenticationProcessingFilter;
 import com.gremio.jwt.JwtAuthTokenFilter;
-import com.gremio.jwt.JwtAuthFilter;
 import com.gremio.service.interfaces.JwtService;
 import com.gremio.service.interfaces.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,7 +59,7 @@ public class SpringSecurityConfig {
                .permitAll()
                .anyRequest().authenticated()
                .and()
-               .addFilterBefore(new JwtAuthFilter(authenticationManager(authConfig), conversionService, jwtService, userService), UsernamePasswordAuthenticationFilter.class)
+               .addFilterBefore(new AuthenticationProcessingFilter(authenticationManager(authConfig), conversionService, jwtService, userService), UsernamePasswordAuthenticationFilter.class)
                .addFilter(new JwtAuthTokenFilter(authenticationManager(authConfig), jwtService, userService))
                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                .and()
