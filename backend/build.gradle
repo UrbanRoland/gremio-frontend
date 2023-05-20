@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.6'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id "org.flywaydb.flyway" version "9.8.1"
 }
 
 group = 'com.gremio'
@@ -19,6 +20,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.flywaydb:flyway-core:9.8.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.0.0'
@@ -31,4 +33,15 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+
+flyway {
+	url = 'jdbc:postgresql://localhost:5432/gremio'
+	user = 'gremio'
+	password = 'gremio'
+	locations = [
+			'classpath:db/migration'
+	]
+	cleanDisabled = false
 }
