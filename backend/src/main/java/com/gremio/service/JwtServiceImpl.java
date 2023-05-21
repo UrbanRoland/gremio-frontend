@@ -59,7 +59,7 @@ public class JwtServiceImpl implements JwtService {
     public String generateRefreshToken(final UserDetails userDetails) {
         return generateRefreshToken(new HashMap<>(), userDetails);
     }
-    public String generateRefreshToken(
+    private String generateRefreshToken(
             final Map<String, Object> extraClaims,
             final UserDetails userDetails
     ) {

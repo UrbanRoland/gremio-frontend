@@ -26,7 +26,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SpringSecurityConfig {
-    
+    private static final String[] AUTH_WHITELIST = {
+        "/api/auth/**",
+        "/swagger-resources/**",
+        "/swagger-ui/**",
+        "/v3/api-docs",
+        "/login/**"
+    };
+
     private final PasswordEncoder passwordEncoder;
     private final ConversionService conversionService;
     private final JwtService jwtService;
@@ -55,7 +62,7 @@ public class SpringSecurityConfig {
                .cors()
                .and()
                .authorizeHttpRequests()
-               .requestMatchers("/api/auth/**", "/login/**")
+               .requestMatchers(AUTH_WHITELIST)
                .permitAll()
                .anyRequest().authenticated()
                .and()
