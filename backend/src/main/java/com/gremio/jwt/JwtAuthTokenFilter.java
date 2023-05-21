@@ -55,7 +55,7 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
     private void authenticateUser(final UserDetails user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
     }
-    
+
     private UserDetails loadUserByUsername(final String email) throws PreAuthenticatedCredentialsNotFoundException {
         final UserDetails user = userService.loadUserByUsername(email);
         if (user == null) {
@@ -64,4 +64,4 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         return user;
     }
 
- }
+}

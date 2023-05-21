@@ -46,7 +46,7 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
         try {
             final AuthRequest authRequest = Optional.ofNullable(new ObjectMapper().readValue(request.getInputStream(), AuthRequest.class))
                     .orElseThrow(() -> new PreAuthenticatedCredentialsNotFoundException("not found"));
-            
+
             if (userService.findUserByEmail(authRequest.getEmail()) == null) {
                 throw new PreAuthenticatedCredentialsNotFoundException("not found");
             }

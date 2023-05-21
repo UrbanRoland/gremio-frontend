@@ -2,6 +2,7 @@ package com.gremio.service;
 
 import com.gremio.enums.RoleType;
 import com.gremio.exception.NotFoundException;
+import com.gremio.model.dto.UserDetailsDto;
 import com.gremio.persistence.entity.User;
 import com.gremio.repository.UserRepository;
 import com.gremio.service.interfaces.UserService;
@@ -9,6 +10,9 @@ import jakarta.validation.ValidationException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,25 +24,14 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    
+    private final ConversionService conversionService;
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
         return Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new NotFoundException("NOT FOUND"));
     }
-    @Override
-    public User findEmailAndUsernameAndNameAndRolesByUsername(final String username) {
-        return userRepository.findEmailAndUsernameAndNameAndRolesByUsername(username);
-    }
-
-    @Override
-    public Optional<User> findByUsername(final String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    @Override
-    public Boolean existsByUsername(final String username) {
-        return userRepository.existsByUsername(username);
-    }
+    
 
     @Override
     public Boolean existsByEmail(final String email) {
@@ -70,5 +63,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(final User user) {
         userRepository.save(user);
+    }
+    
+    @Override
+    public Page<UserDetailsDto> getAllUser(final Pageable pageable) {
+       return userRepository.findAll(pageable).map(user -> conversionService.convert(user, UserDetailsDto.class));
     }
 }

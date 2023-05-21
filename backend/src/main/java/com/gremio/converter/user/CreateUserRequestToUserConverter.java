@@ -1,7 +1,7 @@
 package com.gremio.converter.user;
 
-import com.gremio.persistence.entity.User;
 import com.gremio.model.dto.request.CreateUserRequest;
+import com.gremio.persistence.entity.User;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +15,8 @@ public class CreateUserRequestToUserConverter implements Converter<CreateUserReq
                 .email(source.getEmail())
                 .role(source.getRole())
                 .password(source.getPassword())
+                .firstName(source.getFirstName())
+                .lastName(source.getLastName())
                 .build();
     }
 }

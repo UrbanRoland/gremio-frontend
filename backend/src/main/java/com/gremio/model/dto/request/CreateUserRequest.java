@@ -7,4 +7,6 @@ public class CreateUserRequest {
     private String email;
     private String password;
     private RoleType role;
+    private String firstName;
+    private String lastName;
 }
