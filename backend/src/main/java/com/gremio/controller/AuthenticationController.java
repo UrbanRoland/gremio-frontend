@@ -1,10 +1,10 @@
 package com.gremio.controller;
 
-import com.gremio.persistence.entity.User;
 import com.gremio.model.dto.UserDetailsDto;
 import com.gremio.model.dto.request.CreateUserRequest;
 import com.gremio.model.dto.request.TokenRefreshRequest;
 import com.gremio.model.dto.response.AuthResponse;
+import com.gremio.persistence.entity.User;
 import com.gremio.service.interfaces.JwtService;
 import com.gremio.service.interfaces.UserService;
 import jakarta.validation.Valid;

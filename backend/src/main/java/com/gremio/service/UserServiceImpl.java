@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
     }
   
     @Override
-    public Optional<User> findById(final Long id) {
-        return userRepository.findById(id);
+    public Optional<UserDetailsDto> findById(final Long id) {
+        return userRepository.findById(id).map(user -> conversionService.convert(user, UserDetailsDto.class));
     }
   
     @Override
