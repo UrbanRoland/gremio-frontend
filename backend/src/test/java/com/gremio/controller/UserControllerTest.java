@@ -22,7 +22,7 @@ public class UserControllerTest {
     private UserService userService;
     
     @Test
-    public void testGetAllUsers_WithValidPageable_CallsUserService() {
+    public void UserController_GetAllUsers_CallsUserService() {
         Mockito.when(userService.getAllUser(Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
     
         this.userController.getAllUsers(PageRequest.of(0, 1));
