@@ -1,13 +1,11 @@
 package com.gremio.service;
 
-import com.gremio.model.dto.TaskDto;
 import com.gremio.model.dto.filter.TaskFilter;
 import com.gremio.persistence.entity.Task;
 import com.gremio.persistence.specification.TaskSpecification;
 import com.gremio.repository.TaskRepository;
 import com.gremio.service.interfaces.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final ConversionService conversionService;
 
     @Override
     public Task addTask(final Task task) {
