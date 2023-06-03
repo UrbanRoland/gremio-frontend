@@ -1,13 +1,10 @@
 package com.gremio.controller;
 
 import com.gremio.model.dto.TaskDto;
-import com.gremio.model.dto.UserDetailsDto;
 import com.gremio.model.dto.filter.TaskFilter;
 import com.gremio.model.dto.response.PageableResponse;
 import com.gremio.persistence.entity.Task;
-import com.gremio.service.TaskServiceImpl;
 import com.gremio.service.interfaces.TaskService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,7 +25,7 @@ public class TaskController extends AbstractController {
         super(conversionService);
         this.taskService = taskService;
     }
-    
+
     @PostMapping(value = "/create")
     public ResponseEntity<Task> addTask(@RequestBody final Task task) {
         return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
@@ -39,5 +36,5 @@ public class TaskController extends AbstractController {
     public PageableResponse<TaskDto> getAllByFilter(final TaskFilter taskFilter, final Pageable pageable) {
         return this.getPageableResponse((taskService.getAllByFilter(taskFilter, pageable)), TaskDto.class);
     }
-    
+
 }

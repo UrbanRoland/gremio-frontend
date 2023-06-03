@@ -8,8 +8,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
@@ -22,6 +20,7 @@ public class Task extends BaseEntity {
 
     @OneToMany
     private List<User> assignee;
+    
     private String title;
     private Date due;
     @ManyToOne
