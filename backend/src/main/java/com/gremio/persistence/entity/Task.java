@@ -10,17 +10,16 @@ import java.util.Date;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.envers.Audited;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@SuperBuilder
+@Audited
 public class Task extends BaseEntity {
 
     @OneToMany
     private List<User> assignee;
-    
     private String title;
     private Date due;
     @ManyToOne

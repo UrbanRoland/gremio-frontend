@@ -12,10 +12,10 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,8 +24,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Data
 @NoArgsConstructor
-@SuperBuilder
+@Builder
+@AllArgsConstructor
 @Table(name = "users")
+@Audited
 public class User extends BaseEntity implements UserDetails {
 
     private String firstName;

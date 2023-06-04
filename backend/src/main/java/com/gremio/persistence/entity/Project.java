@@ -3,12 +3,12 @@ package com.gremio.persistence.entity;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
+import org.hibernate.envers.Audited;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@SuperBuilder
+@Audited
 public class Project  extends BaseEntity {
 
     private String name;

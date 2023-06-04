@@ -6,17 +6,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @MappedSuperclass
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseEntity {
+public class BaseEntity extends Auditable<String> {
 
     @Id
     @Column(unique = true, nullable = false)

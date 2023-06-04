@@ -42,6 +42,10 @@ dependencies {
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.2'
 	annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen"
 	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+	implementation 'org.springframework.data:spring-data-envers:3.1.0'
+	implementation 'javax.persistence:javax.persistence-api:2.2'
+
+
 }
 
 flyway {
