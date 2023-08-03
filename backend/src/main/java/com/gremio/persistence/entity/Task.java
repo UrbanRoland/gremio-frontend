@@ -8,14 +8,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
 @Audited
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class Task extends BaseEntity {
 
     @OneToMany

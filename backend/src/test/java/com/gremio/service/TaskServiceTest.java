@@ -32,7 +32,6 @@ public class TaskServiceTest {
     @Test
     public void TaskService_AddTask_ReturnTask() {
         final Task task = Task.builder()
-            .id(1L)
             .title("test")
             .due(new Date())
             .build();

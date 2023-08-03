@@ -45,12 +45,13 @@ public class UserServiceTest {
     @BeforeEach
     public void init() {
         this.user = User.builder()
-            .id(1L)
             .firstName("Test")
             .lastName("Test")
             .email("test@test.com")
             .password("Test12345676")
             .build();
+        
+        user.setId(1L);
     }
     @Test
     public void UserService_GetAllUser_ReturnsUserDetailsPage() {
