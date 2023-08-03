@@ -26,11 +26,25 @@ public class TaskController extends AbstractController {
         this.taskService = taskService;
     }
 
+    /**
+     * Creates a new task and adds it to the system.
+     *
+     * @param task The task object to be added.
+     * @return A ResponseEntity containing the newly created task and HTTP status 201 (Created).
+     */
     @PostMapping(value = "/create")
     public ResponseEntity<Task> addTask(@RequestBody final Task task) {
         return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
     }
 
+    /**
+     * Retrieves a paginated list of tasks based on the provided task filter.
+     * Requires "ROLE_ADMIN" authority.
+     *
+     * @param taskFilter The task filter to apply for retrieving tasks.
+     * @param pageable   The pagination information.
+     * @return A paginated response containing a list of TaskDto objects.
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public PageableResponse<TaskDto> getAllByFilter(final TaskFilter taskFilter, final Pageable pageable) {

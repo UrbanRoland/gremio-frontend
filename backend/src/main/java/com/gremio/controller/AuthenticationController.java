@@ -22,9 +22,14 @@ public class AuthenticationController {
 
     private final UserService userService;
     private final ConversionService conversionService;
-
     private final JwtService jwtService;
-    
+
+    /**
+     * Creates a new user in the system.
+     *
+     * @param request The CreateUserRequest containing the user details to create.
+     * @return The UserDetailsDto of the newly created user.
+     */
     @PostMapping
     public UserDetailsDto createUser(@RequestBody @Valid final CreateUserRequest request) {
         final User user = userService.create(conversionService.convert(request, User.class));
@@ -33,6 +38,12 @@ public class AuthenticationController {
 
     }
 
+    /**
+     * Refreshes the authentication token using the provided refresh token.
+     *
+     * @param tokenRequest The TokenRefreshRequest containing the refresh token.
+     * @return An AuthResponse containing the new access token if successful, or null if the user is not found.
+     */
     @PostMapping("/token/refresh")
     public AuthResponse refreshToken(@Valid @RequestBody final TokenRefreshRequest tokenRequest) {
         return jwtService.refreshAuthToken(tokenRequest.getRefreshToken());

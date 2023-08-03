@@ -25,6 +25,16 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         this.userService = userService;
     }
 
+    /**
+     * Filters the incoming request and processes the JWT token for authentication.
+     * If a valid token is found, it authenticates the user using the provided authentication manager.
+     *
+     * @param request     The HTTP servlet request.
+     * @param response    The HTTP servlet response.
+     * @param filterChain The filter chain.
+     * @throws ServletException If an error occurs during filtering.
+     * @throws IOException      If an I/O error occurs during filtering.
+     */
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
                 final HttpServletResponse response,
@@ -44,6 +54,12 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Processes the provided JWT token, extracts the username from it, and validates the token for the user.
+     * If the token is valid, it proceeds to authenticate the user.
+     *
+     * @param token The JWT token to process.
+     */
     private void processToken(final String token) {
         final String email = jwtService.extractUsername(token);
         final UserDetails user = loadUserByUsername(email);
@@ -52,10 +68,22 @@ public class JwtAuthTokenFilter extends BasicAuthenticationFilter {
         }
     }
 
+    /**
+     * Authenticates the provided user by setting the user's authentication information in the security context.
+     *
+     * @param user The user details to be authenticated.
+     */
     private void authenticateUser(final UserDetails user) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
     }
 
+    /**
+     * Loads the user details based on the provided email.
+     *
+     * @param email The email of the user to load.
+     * @return The UserDetails object representing the loaded user.
+     * @throws PreAuthenticatedCredentialsNotFoundException If the user with the provided email is not found.
+     */
     private UserDetails loadUserByUsername(final String email) throws PreAuthenticatedCredentialsNotFoundException {
         final UserDetails user = userService.loadUserByUsername(email);
         if (user == null) {

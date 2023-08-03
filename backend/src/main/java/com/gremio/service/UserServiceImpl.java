@@ -2,6 +2,7 @@ package com.gremio.service;
 
 import com.gremio.enums.RoleType;
 import com.gremio.exception.NotFoundException;
+import com.gremio.message.NotFoundMessageKey;
 import com.gremio.model.dto.UserDetailsDto;
 import com.gremio.persistence.entity.User;
 import com.gremio.repository.UserRepository;
@@ -27,9 +28,16 @@ public class UserServiceImpl implements UserService {
     
     private final ConversionService conversionService;
 
+    /**
+     * Retrieves the user details associated with the provided email.
+     *
+     * @param email The email address of the user to retrieve.
+     * @return The user details corresponding to the given email.
+     * @throws UsernameNotFoundException If the user with the provided email is not found.
+     */
     @Override
     public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        return Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new NotFoundException("NOT FOUND"));
+        return Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new NotFoundException(NotFoundMessageKey.USER));
     }
 
     @Override

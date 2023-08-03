@@ -20,6 +20,12 @@ public class UserController extends AbstractController {
         this.userService = userService;
     }
 
+    /**
+     * Retrieves a paginated list of all users from the system. Requires "ROLE_ADMIN" authority.
+     *
+     * @param pageable The pagination information.
+     * @return A paginated response containing a list of UserDetailsDto objects.
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public PageableResponse<UserDetailsDto> getAllUsers(final Pageable pageable) {
