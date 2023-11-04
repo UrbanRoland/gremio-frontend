@@ -3,6 +3,7 @@ package com.gremio.service;
 import com.gremio.enums.RoleType;
 import com.gremio.exception.NotFoundException;
 import com.gremio.model.dto.UserDetailsDto;
+import com.gremio.model.dto.UserDto;
 import com.gremio.persistence.entity.User;
 import com.gremio.repository.UserRepository;
 import jakarta.validation.ValidationException;
@@ -78,7 +79,6 @@ public class UserServiceTest {
     }
     @Test
     public void UserService_FindUserByEmail_ReturnsUser() {
-
         Mockito.when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(user);
         final User existUser = userService.findUserByEmail(user.getEmail());
         
@@ -88,7 +88,6 @@ public class UserServiceTest {
     
     @Test
     public void UserService_CreateUser_ReturnsUser() {
-        
         Mockito.when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(null);
         Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn("encodedPassword");
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
@@ -102,7 +101,6 @@ public class UserServiceTest {
     }
     @Test
     public void UserService_CreateUser_ThrowsValidationException() {
-    
         Mockito.when(userRepository.findUserByEmail(Mockito.anyString())).thenReturn(user);
     
         Assertions.assertThrows(ValidationException.class, () -> userService.create(user));
@@ -141,7 +139,6 @@ public class UserServiceTest {
     }
     @Test
     public void UserService_LoadUserByUserName_ReturnsUserDetails() {
-        
         Mockito.when(userRepository.findUserByEmail(user.getEmail())).thenReturn(user);
         UserDetails userDetails = userService.loadUserByUsername(user.getEmail());
         
@@ -151,7 +148,6 @@ public class UserServiceTest {
     
     @Test
     public void UserService_LoadUserByUserName_ThrowsNotFoundException() {
-        
         Mockito.when(userRepository.findUserByEmail(user.getEmail())).thenReturn(null);
     
         Assertions.assertThrows(NotFoundException.class, () -> {
@@ -159,6 +155,28 @@ public class UserServiceTest {
         });
 
         Mockito.verify(userRepository).findUserByEmail(user.getEmail());
+    }
+    
+    @Test
+    public void UserService_Update_ReturnUser() {
+        String encodedPassword = "encodedTest123";
+        UserDto userDto = UserDto.builder()
+            .email("newemail@example.com")
+            .role(RoleType.ROLE_READ_ONLY)
+            .password("test123")
+            .build();
+        
+        Mockito.when(userRepository.getReferenceById(user.getId())).thenReturn(user);
+        Mockito.when(userRepository.findUserByEmail(userDto.getEmail())).thenReturn(null);
+        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
+        Mockito.when(passwordEncoder.encode(userDto.getPassword())).thenReturn(encodedPassword);
+    
+        User updatedUser = userService.update(user.getId(), userDto);
+    
+        Assertions.assertEquals(userDto.getEmail(), updatedUser.getEmail());
+        Assertions.assertEquals(encodedPassword, updatedUser.getPassword());
+        Assertions.assertEquals(userDto.getRole().getName(), updatedUser.getRole().getName());
+    
     }
     
 }

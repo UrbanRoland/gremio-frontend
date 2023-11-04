@@ -1,6 +1,7 @@
 package com.gremio.service.interfaces;
 
 import com.gremio.model.dto.UserDetailsDto;
+import com.gremio.model.dto.UserDto;
 import com.gremio.persistence.entity.User;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -47,4 +48,13 @@ public interface UserService extends UserDetailsService {
      * @return A page of UserDetailsDto objects.
      */
     Page<UserDetailsDto> getAllUser(Pageable pageable);
+
+    /**
+     * update user data.
+     *
+     * @param id of a user
+     * @param userDto the update requested userDto
+     * @return the updated user
+     */
+    User update(long id, UserDto userDto);
 }

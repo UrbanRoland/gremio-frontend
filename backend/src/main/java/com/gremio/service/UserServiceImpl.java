@@ -4,6 +4,7 @@ import com.gremio.enums.RoleType;
 import com.gremio.exception.NotFoundException;
 import com.gremio.message.NotFoundMessageKey;
 import com.gremio.model.dto.UserDetailsDto;
+import com.gremio.model.dto.UserDto;
 import com.gremio.persistence.entity.User;
 import com.gremio.repository.UserRepository;
 import com.gremio.service.interfaces.UserService;
@@ -40,16 +41,25 @@ public class UserServiceImpl implements UserService {
         return Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new NotFoundException(NotFoundMessageKey.USER));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User findUserByEmail(final String email) {
         return userRepository.findUserByEmail(email);
     }
-  
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<UserDetailsDto> findById(final Long id) {
         return userRepository.findById(id).map(user -> conversionService.convert(user, UserDetailsDto.class));
     }
-  
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User create(final User user) {
         if (userRepository.findUserByEmail(user.getEmail()) != null) {
@@ -61,14 +71,43 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.save(user);
     }
-  
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(final User user) {
         userRepository.save(user);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<UserDetailsDto> getAllUser(final Pageable pageable) {
        return userRepository.findAll(pageable).map(user -> conversionService.convert(user, UserDetailsDto.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public User update(final long id, final UserDto userDto) {
+        final User user = userRepository.getReferenceById(id);
+
+        if (userDto.getEmail() != null && !userDto.getEmail().equals("")) {
+            if (!userDto.getEmail().equals(user.getEmail()) && userRepository.findUserByEmail(userDto.getEmail()) != null) {
+                throw new ValidationException("Email already taken!");
+            }
+            user.setEmail(userDto.getEmail());
+        }
+
+        if (userDto.getPassword() != null && !userDto.getPassword().equals("")) {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        user.setRole(userDto.getRole());
+
+        return userRepository.save(user);
     }
 }
