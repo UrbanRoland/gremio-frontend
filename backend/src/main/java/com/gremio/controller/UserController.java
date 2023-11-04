@@ -30,7 +30,7 @@ public class UserController extends AbstractController {
      * @return A paginated response containing a list of UserDetailsDto objects.
      */
     @GetMapping
-
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public PageableResponse<UserDetailsDto> getAllUsers(final Pageable pageable) {
         return this.getPageableResponse(userService.getAllUser(pageable));
     }
