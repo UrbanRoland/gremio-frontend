@@ -90,6 +90,6 @@ public class AuthenticationProcessingFilter extends AbstractAuthenticationProces
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        new ObjectMapper().writeValue(response.getWriter(), "bad-credentials");
+        new ObjectMapper().writeValue(response.getWriter(), "You have entered either the email and/or password incorrectly!");
     }
 }
