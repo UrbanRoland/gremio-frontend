@@ -7,23 +7,40 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { AuthGuardService } from 'src/app/services/auth-guard.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 
+
+
+const jwtOptions = {
+  // Your JWT options configuration here (e.g., tokenGetter, whitelistedDomains, etc.)
+};
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    DashboardComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    JwtModule.forRoot({
+      config: jwtOptions,
+    }),
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    AuthGuardService,
+ 
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

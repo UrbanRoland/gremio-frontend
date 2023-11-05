@@ -18,7 +18,7 @@ export class UserSettingsComponent implements OnInit {
   ngOnInit() {
     this.loadCountries();
     this.userSettings = this.fb.group({
-      username: ['Sammy', Validators.required],
+      username: ['', Validators.required],
     });
   }
 
