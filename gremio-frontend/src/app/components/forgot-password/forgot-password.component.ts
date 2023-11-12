@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, tap } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -11,7 +11,8 @@ import { UserService } from 'src/app/services/user.service';
 export class ForgotPasswordComponent implements OnInit {
   forgotPasswordForm!: FormGroup;
   submitted = false;
-  errorMessage?: string
+  errorMessage?: string;
+  loading = false;
 
   public constructor(
     private fb: FormBuilder,
@@ -26,42 +27,33 @@ export class ForgotPasswordComponent implements OnInit {
 
   onSumbit() {
     this.submitted = true;
-    if (this.forgotPasswordForm.valid) {
+    if (this.forgotPasswordForm.valid && !this.loading) {
+      this.loading = true;
+
       this.userService
         .forgotPassword(this.forgotPasswordForm.value)
         .pipe(
           tap((response) => {
-            console.log('Response: ', response);
-
-            const dropdown = document.querySelector('.modal');
-
-            if (dropdown) {
-              if (dropdown.classList.contains('hidden')) {
-                dropdown.classList.remove('hidden');
-              } else {
-                dropdown.classList.add('hidden');
-              }
-            }
+            this.toggleModal();
           }),
           catchError((error) => {
-            console.log('Error: ', JSON.stringify(error));
-            this.errorMessage = error.error.message
+            this.errorMessage = error.error.message;
             throw error;
+          }),
+          finalize(() => {
+            this.loading = false;
           })
         )
         .subscribe();
     }
   }
 
-  closeDropdown() {
+  toggleModal() {
     const dropdown = document.querySelector('.modal');
 
     if (dropdown) {
-      if (dropdown.classList.contains('hidden')) {
-        dropdown.classList.remove('hidden');
-      } else {
-        dropdown.classList.add('hidden');
-      }
+      dropdown.classList.toggle('hidden');
     }
+    this.loading = false;
   }
 }

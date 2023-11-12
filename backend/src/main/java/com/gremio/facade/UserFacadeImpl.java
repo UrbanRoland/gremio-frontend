@@ -1,28 +1,22 @@
 package com.gremio.facade;
 
+import com.gremio.enums.UserMessageKey;
 import com.gremio.exception.NotFoundException;
+import com.gremio.exception.UserException;
 import com.gremio.message.NotFoundMessageKey;
 import com.gremio.persistence.entity.PasswordResetToken;
 import com.gremio.persistence.entity.User;
 import com.gremio.repository.PasswordResetTokenRepository;
 import com.gremio.service.interfaces.EmailService;
 import com.gremio.service.interfaces.UserService;
-
-import java.time.Duration;
-import java.time.LocalDate;
+import java.time.Duration;;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-import eu.bitwalker.useragentutils.UserAgent;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RequiredArgsConstructor
 @Component
@@ -31,13 +25,11 @@ public class UserFacadeImpl implements  UserFacade {
     private final UserService userService;
     private final EmailService emailService;
     private final PasswordResetTokenRepository resetTokenRepository;
-    
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public String forgotPassword(final String email) {
         final User user = userService.findUserByEmail(email);
-    
 
         if (user == null) {
           throw  new NotFoundException(NotFoundMessageKey.USER);
@@ -52,11 +44,10 @@ public class UserFacadeImpl implements  UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void resetPassword(final String password, final String token) {
-        PasswordResetToken resetToken = resetTokenRepository.findByToken(token);
+        final PasswordResetToken resetToken = resetTokenRepository.findByToken(token);
         
         if(resetToken == null) {
-            //todo exception class and format message
-            throw new IllegalArgumentException("Invalid token!");
+            throw new UserException(UserMessageKey.INVALID_TOKEN);
         }
     
         if (isTokenExpired(resetToken.getCreationDate())) {
@@ -66,8 +57,8 @@ public class UserFacadeImpl implements  UserFacade {
         
         resetTokenRepository.deleteById(resetToken.getId());
         
-        User user = resetToken.getUser();
-        String encodedPassword = passwordEncoder.encode(password);
+        final User user = resetToken.getUser();
+        final String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
         userService.save(user);
         

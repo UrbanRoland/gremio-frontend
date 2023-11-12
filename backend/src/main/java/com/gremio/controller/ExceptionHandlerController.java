@@ -1,5 +1,6 @@
 package com.gremio.controller;
 
+import com.gremio.enums.GeneralExceptionMessage;
 import com.gremio.exception.NotFoundException;
 import com.gremio.model.dto.response.ExceptionResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -36,5 +37,27 @@ public class ExceptionHandlerController {
     private ResponseEntity<ExceptionResponse> createExceptionResponse(final HttpStatus status, final String message) {
         return ResponseEntity.status(status).body(new ExceptionResponse(message));
     }
+
+    /**
+     * Exception handler method to handle general exceptions and runtime exceptions.
+     * It logs the exception and returns a ResponseEntity with an {@link ExceptionResponse}
+     * containing the HTTP status code and the exception message.
+     *
+     * @param exception The exception to be handled.
+     * @return A ResponseEntity with an {@link ExceptionResponse}.
+     *
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({Exception.class, RuntimeException.class})
+    public ResponseEntity<ExceptionResponse> generalExceptionHandler(final Exception exception) {
+        log.error("Not caught exception", exception);
+        
+        final String exceptionMessage = exception instanceof RuntimeException
+            ? exception.getMessage()
+            : GeneralExceptionMessage.INTERNAL_SERVER_ERROR.getKey();
+        
+        return createExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, exceptionMessage);
+    }
+    
 
 }
