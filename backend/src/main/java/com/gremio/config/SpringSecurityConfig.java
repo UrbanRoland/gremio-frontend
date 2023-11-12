@@ -33,7 +33,9 @@ public class SpringSecurityConfig {
         "/swagger-resources/**",
         "/swagger-ui/**",
         "/v3/api-docs",
-        "/login/**"
+        "/login/**",
+        "/users/forgot-password",
+        "/users/reset-password"
     };
 
     private final PasswordEncoder passwordEncoder;

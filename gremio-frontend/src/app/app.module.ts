@@ -11,6 +11,8 @@ import { AuthGuardService } from 'src/app/services/auth-guard.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { JwtModule } from '@auth0/angular-jwt';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 
 
@@ -25,6 +27,8 @@ const jwtOptions = {
     RegistrationComponent,
     UserSettingsComponent,
     DashboardComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
 
   ],
   imports: [

@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
     private String password;
     private String refreshToken;
+    @OneToOne(mappedBy = "user")
+    private PasswordResetToken passwordResetToken;
 
     @Column(columnDefinition = "varchar(128) default 'ROLE_READ_ONLY'")
     @Enumerated(EnumType.STRING)

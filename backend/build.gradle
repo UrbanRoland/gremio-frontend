@@ -44,6 +44,11 @@ dependencies {
 	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 	implementation 'org.springframework.data:spring-data-envers:3.1.0'
 	implementation 'javax.persistence:javax.persistence-api:2.2'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '3.1.5'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.1.5'
+	implementation group: 'com.moilioncircle', name: 'user-agent-utils', version: '1.53'
+
+
 
 
 }
