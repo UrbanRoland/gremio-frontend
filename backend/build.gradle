@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.gremio'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '17'
 
 configurations {

@@ -17,6 +17,21 @@ services:
       - gremio_psql_logs:/logs/postgres
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gremio_backend
+    restart: unless-stopped
+    networks:
+      - gremio
+    ports:
+      - "9000:8080"
+    volumes:
+      - spring_app_config:/app/config
+      - spring_app_logs:/app/logs
+    depends_on:
+      - postgres
 
 networks:
   gremio:
@@ -24,3 +39,5 @@ networks:
 volumes:
   psql_gremio:
   gremio_psql_logs:
+  spring_app_config:
+  spring_app_logs:
