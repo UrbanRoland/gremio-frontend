@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  gremio_fronted:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: gremio_frontend
+    image: gremio_frontend
+    networks:
+      - gremio
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./src:/usr/src/app/src
+
+networks:
+  gremio:
+    external: true
