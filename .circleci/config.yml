@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cypress/base:20.5.0
+      - image: cimg/node:20.4.0
 
     working_directory: ~/app
 
