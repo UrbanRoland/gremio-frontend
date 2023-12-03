@@ -26,6 +26,9 @@ jobs:
           name: Build Angular App
           command: npm run build
 
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       # Build Docker image
       - run:
           name: Build Docker image
