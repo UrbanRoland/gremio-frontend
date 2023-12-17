@@ -12,7 +12,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { IconComponent } from './icon/icon.component';
+import { IconComponent } from './components/icon/icon.component';
 
 
 

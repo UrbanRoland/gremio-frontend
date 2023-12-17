@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EmailRequest } from '../shared/EmailRequest';
-import { ResetPasswordRequest } from '../shared/ResetPasswordRequest';
+
 
 @Injectable({
   providedIn: 'root',
