@@ -52,7 +52,6 @@ export class ResetPasswordComponent implements OnInit {
     if (this.resetPasswordForm.valid) {
       const { password } = this.resetPasswordForm.value;
       const token = this.extractTokenFromUrl();
-      console.log('token' + token);
       this.userService
         .resetPassword(password, token)
         .pipe(
