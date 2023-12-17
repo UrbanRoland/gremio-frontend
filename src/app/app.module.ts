@@ -8,11 +8,11 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthGuardService } from 'src/app/services/auth-guard.service';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { JwtModule } from '@auth0/angular-jwt';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { IconComponent } from './icon/icon.component';
 
 
 
@@ -29,6 +29,7 @@ const jwtOptions = {
     DashboardComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    IconComponent,
 
   ],
   imports: [

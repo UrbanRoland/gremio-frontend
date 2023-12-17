@@ -79,18 +79,27 @@
             </div>
           </div>
           <div class="mt-2">
-            <input
-              formControlName="password"
-              name="password"
-              type="password"
-              required
-              [ngClass]="{ 
-                    'border-red-500': (loginForm.get('password')?.touched || submitted) && loginForm.get('password')?.hasError('required'),
-                    'border-0': !loginForm.get('password')?.touched && !submitted,
-                    'border-green-500': loginForm.get('password')?.valid,
-                  }"
-              class="block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
+            <div class="relative w-full min-w-[200px] h-10">
+              <div
+                class="absolute grid place-items-center top-4 right-3 -translate-y-2/4"
+              >
+                <button (click)="showHidePassword($event)">
+                  <app-icon [iconName]=" showPassword ? 'eye-close' : 'eye-open'" iconClasses="w-6 h-5" ></app-icon>
+                </button>
+              </div>
+              <input
+                formControlName="password"
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                required
+                [ngClass]="{ 
+                      'border-red-500': (loginForm.get('password')?.touched || submitted) && loginForm.get('password')?.hasError('required'),
+                      'border-0': !loginForm.get('password')?.touched && !submitted,
+                      'border-green-500': loginForm.get('password')?.valid,
+                    }"
+                class="block w-full rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
             <div
               *ngIf="
                 (loginForm.get('password')?.touched || submitted) &&

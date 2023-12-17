@@ -18,6 +18,8 @@ export class ResetPasswordComponent implements OnInit {
   resetPasswordForm!: FormGroup;
   submitted = false;
   errorMessage?: string;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   public constructor(
     private fb: FormBuilder,
@@ -94,5 +96,15 @@ export class ResetPasswordComponent implements OnInit {
     const url = window.location.href;
     const parts = url.split('/');
     return parts[parts.length - 1];
+  }
+
+  showHidePassword(event: Event) {
+    event.preventDefault();
+    this.showPassword = !this.showPassword;
+  }
+
+  showHideConfirmPassword(event: Event) {
+    event.preventDefault();
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

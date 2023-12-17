@@ -13,7 +13,8 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   submitted = false;
-  errorMessage?: string
+  errorMessage?: string;
+  showPassword: boolean = false;
 
   constructor(
     private auth: AuthService,
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit {
           }),
           catchError((error) => {
             console.error('Error:', error);
-            this.errorMessage = error.error
+            this.errorMessage = error.error;
             throw error;
           })
         )
@@ -53,4 +54,10 @@ export class LoginComponent implements OnInit {
   isAuthenticated(): boolean {
     return this.auth.isAuthenticated();
   }
+
+  showHidePassword(event: Event) {
+    event.preventDefault();
+    this.showPassword = !this.showPassword;
+  }
+  
 }
