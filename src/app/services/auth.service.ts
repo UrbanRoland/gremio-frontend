@@ -11,7 +11,7 @@ import { RegistrationRequest } from '../shared/RegistrationRequest';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:9000';
+  private apiUrl = 'http://localhost:9000/graphql';
   constructor(
     private http: HttpClient,
     public jwtHelper: JwtHelperService,
