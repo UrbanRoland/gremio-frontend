@@ -33,12 +33,15 @@ export class LoginComponent implements OnInit {
   onSumbit() {
     this.submitted = true;
     if (this.loginForm.valid) {
+      const email = this.loginForm.get('email')?.value;
+      const password = this.loginForm.get('password')?.value;
+
       this.auth
-        .login(this.loginForm.value)
+        .login(email, password)
         .pipe(
           tap((response) => {
             console.log('Response:', response);
-            this.localStorage.set('accessToken', response.accessToken);
+            this.localStorage.set('accessToken', response.data.login.accessToken);
             this.router.navigate(['dashboard']);
           }),
           catchError((error) => {
