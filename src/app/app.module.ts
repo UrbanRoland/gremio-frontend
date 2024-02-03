@@ -13,6 +13,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { IconComponent } from './components/icon/icon.component';
+import { GraphQLModule } from './graphql.module';
 
 
 
@@ -41,6 +42,7 @@ const jwtOptions = {
     JwtModule.forRoot({
       config: jwtOptions,
     }),
+    GraphQLModule,
   ],
   providers: [
     AuthGuardService,
