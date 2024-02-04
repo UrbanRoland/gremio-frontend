@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, tap } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
+import { UserInput } from 'src/app/shared/inputs/UserInput';
 
 @Component({
   selector: 'app-reset-password',
@@ -52,8 +53,17 @@ export class ResetPasswordComponent implements OnInit {
     if (this.resetPasswordForm.valid) {
       const { password } = this.resetPasswordForm.value;
       const token = this.extractTokenFromUrl();
+
+      console.log('Token: ', token);
+      console.log(this.resetPasswordForm.value)
+      
+      const userInput: UserInput = {
+        password: password,
+        token: token,
+      };
+
       this.userService
-        .resetPassword(password, token)
+        .resetPassword(userInput)
         .pipe(
           tap((response) => {
             console.log('Response: ', response);
@@ -69,8 +79,7 @@ export class ResetPasswordComponent implements OnInit {
             }
           }),
           catchError((error) => {
-            console.log('Error: ', JSON.stringify(error));
-            this.errorMessage = error.error.message;
+            this.errorMessage = error.message;
             throw error;
           })
         )

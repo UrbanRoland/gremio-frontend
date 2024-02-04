@@ -1,24 +1,28 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EmailRequest } from '../shared/EmailRequest';
+import { Apollo, MutationResult } from 'apollo-angular';
+import { FORGOT_PASSWORD_MUTATION } from '../graphql/mutations/forgotPassword';
+import { UserInput } from '../shared/inputs/UserInput';
+import { RESET_PASSWORD_MUTATION } from '../graphql/mutations/resetPassword';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private baseUrl = 'http://localhost:9000/users';
+  constructor(private apollo: Apollo) {}
 
-  constructor(private http: HttpClient) {}
-
-  public forgotPassword(data: EmailRequest): Observable<EmailRequest> {
-    return this.http.post<EmailRequest>(
-      this.baseUrl + '/forgot-password',
-      data
-    );
+  public forgotPassword(email: string): Observable<MutationResult> {
+    return this.apollo.mutate<string>({
+      mutation: FORGOT_PASSWORD_MUTATION,
+      variables: { email },
+    });
   }
-  public resetPassword(password: string, token: string): Observable<EmailRequest> {
-    const data = { password, token };
-    return this.http.post<EmailRequest>(this.baseUrl + '/reset-password', data);
+
+  public resetPassword(userInput: UserInput): Observable<MutationResult> {
+    return this.apollo.mutate<string>({
+      mutation: RESET_PASSWORD_MUTATION,
+      variables: { userInput },
+    });
   }
 }

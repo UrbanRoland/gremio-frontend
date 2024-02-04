@@ -29,15 +29,14 @@ export class ForgotPasswordComponent implements OnInit {
     this.submitted = true;
     if (this.forgotPasswordForm.valid && !this.loading) {
       this.loading = true;
-
       this.userService
-        .forgotPassword(this.forgotPasswordForm.value)
+        .forgotPassword(this.forgotPasswordForm.value.email)
         .pipe(
-          tap((response) => {
+          tap(() => {
             this.toggleModal();
           }),
           catchError((error) => {
-            this.errorMessage = error.error.message;
+            this.errorMessage = error.message;
             throw error;
           }),
           finalize(() => {
