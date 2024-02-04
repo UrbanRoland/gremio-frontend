@@ -1,4 +1,4 @@
-# Gremio API
+# Gremio Frontend
 [![UrbanRoland](https://circleci.com/gh/UrbanRoland/gremio-frontend.svg?style=svg)](<LINK>)
 
 ## Table of Contents
