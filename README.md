@@ -1,27 +1,47 @@
-# GremioFrontend
+# Gremio API
+[![UrbanRoland](https://circleci.com/gh/UrbanRoland/gremio-frontend.svg?style=svg)](<LINK>)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.8.
+## Table of Contents
 
-## Development server
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Overview
 
-## Code scaffolding
+Gremio is a single-page project management web application inspired by Asana/Jira built with JavaScript, Angular, PostgreSQL,
+GraphQL and Spring Boot.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Prerequisites
 
-## Build
+Before you begin, ensure that you have the following tools installed on your machine:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- Node 20 or higher
+- Npm 9 or higher
+- Angular cli 16 or higher
+- Docker
 
-## Running unit tests
+## Getting Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+1. Clone the repository:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+   ```bash
+   git clone https://github.com/UrbanRoland/gremio-frontend.git
 
-## Further help
+2. Run docker-compose(in backend):
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+   ```bash
+   docker-compose up
+   ```
+2. Install npm:
+
+   ```bash
+   npm install
+   ```   
+   
+4. Run the application:
+
+   ```bash
+   ng serve
+   ```
